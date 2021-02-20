@@ -6,7 +6,7 @@ from histoqc.SaveModule import saveThumbnails as _saveThumbnails
 
 if TYPE_CHECKING:
     import numpy as np
-    from histoqc.pep8style._pipeline import PipelineState
+    from ._pipeline import PipelineState
 
 __all__ = [
     'save_final_mask',

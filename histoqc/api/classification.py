@@ -8,8 +8,8 @@ from histoqc.ClassificationModule import byExampleWithFeatures as _byExampleWith
 if TYPE_CHECKING:
     from threading import Lock
     import numpy as np
-    from histoqc.pep8style._pipeline import PipelineState
-    from histoqc.pep8style.base_image import MaskStatisticsType
+    from ._pipeline import PipelineState
+    from .base_image import MaskStatisticsType
 
 __all__ = [
     'pixel_wise',

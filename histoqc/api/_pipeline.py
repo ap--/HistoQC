@@ -12,6 +12,11 @@ from typing import TypedDict
 
 import numpy as np
 
+__all__ = [
+    "PipelineState",
+    "PipelineChain",
+]
+
 
 class _ImageInfo(TypedDict):
     filename: str

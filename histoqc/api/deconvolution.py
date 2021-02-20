@@ -6,7 +6,7 @@ from histoqc.DeconvolutionModule import seperateStains as _seperateStains
 
 if TYPE_CHECKING:
     import numpy as np
-    from histoqc.pep8style._pipeline import PipelineState
+    from ._pipeline import PipelineState
 
 __all__ = [
     'separate_stains',

@@ -8,8 +8,8 @@ from histoqc.MorphologyModule import fillSmallHoles as _fillSmallHoles
 
 if TYPE_CHECKING:
     import numpy as np
-    from histoqc.pep8style._pipeline import PipelineState
-    from histoqc.pep8style.base_image import MaskStatisticsType
+    from ._pipeline import PipelineState
+    from .base_image import MaskStatisticsType
 
 __all__ = [
     'remove_small_objects',

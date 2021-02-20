@@ -1,12 +1,14 @@
 """pep8 shim for histoqc.BubbleRegionByRegion with pep484 type annotations"""
 from typing import Optional
+from typing import TYPE_CHECKING
 
-import numpy as np
-
-from histoqc.pep8style._pipeline import PipelineState
-from histoqc.pep8style.base_image import MaskStatisticsType
 from histoqc.BubbleRegionByRegion import roiWise as _roiWise
 from histoqc.BubbleRegionByRegion import detectSmoothness as _detectSmoothness
+
+if TYPE_CHECKING:
+    import numpy as np
+    from ._pipeline import PipelineState
+    from .base_image import MaskStatisticsType
 
 __all__ = [
     'roi_wise',

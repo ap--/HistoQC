@@ -6,7 +6,7 @@ from histoqc.HistogramModule import compareToTemplates as _compareToTemplates
 
 if TYPE_CHECKING:
     import numpy as np
-    from histoqc.pep8style._pipeline import PipelineState
+    from ._pipeline import PipelineState
 
 __all__ = [
     'get_histogram',

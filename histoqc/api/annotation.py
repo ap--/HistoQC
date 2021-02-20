@@ -7,7 +7,7 @@ from histoqc.AnnotationModule import geoJSONMask as _geoJSONMask
 
 if TYPE_CHECKING:
     import numpy as np
-    from histoqc.pep8style._pipeline import PipelineState
+    from ._pipeline import PipelineState
 
 __all__ = ['xml_mask', 'geojson_mask']
 
