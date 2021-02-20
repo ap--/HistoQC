@@ -7,13 +7,14 @@ from typing import Dict
 from typing import List
 from typing import NamedTuple
 from typing import Optional
+from typing import Protocol
 from typing import Tuple
 from typing import TypedDict
 
 import numpy as np
 
 __all__ = [
-    "PipelineState",
+    "PipelineCallable",
     "PipelineChain",
 ]
 
@@ -92,6 +93,12 @@ class _BaseImageHelper(ChainMap):
         return _PUpdate(updated_state, added_state, warnings)
 
 
+class PipelineCallable(Protocol):
+
+    def histoqc_call(self, func: Callable[[_BaseImageHelper, Dict[str, Any]], Any], **params) -> np.ndarray:
+        ...
+
+
 class PipelineState:
 
     def __init__(
@@ -144,10 +151,10 @@ class PipelineState:
         )
 
     @classmethod
-    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> 'PipelineState':
+    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> 'PipelineCallable':
         ...
 
-    def call(self, func, **params) -> np.ndarray:
+    def histoqc_call(self, func, **params) -> np.ndarray:
         with self.base_image() as s:
             _ = func(s, params)
         return self.mask
@@ -158,7 +165,7 @@ class PipelineChain:
     def __init__(self):
         self._steps = []
 
-    def call(self, func, **params) -> None:
+    def histoqc_call(self, func, **params) -> None:
         self._steps.append((func, params))
         return None
 
@@ -167,10 +174,3 @@ class PipelineChain:
             for func, params in self._steps:
                 _ = func(s, params)
         return pstate.mask
-
-
-
-
-
-
-

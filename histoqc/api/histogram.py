@@ -6,7 +6,7 @@ from histoqc.HistogramModule import compareToTemplates as _compareToTemplates
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
 
 __all__ = [
     'get_histogram',
@@ -15,12 +15,12 @@ __all__ = [
 
 
 def get_histogram(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True,
     bins: int = 20,
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _getHistogram,
         limit_to_mask=str(limit_to_mask),
         bins=bins,
@@ -28,13 +28,13 @@ def get_histogram(
 
 
 def compare_to_templates(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     templates: str,
     limit_to_mask: bool = True,
     bins: int = 20,
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _compareToTemplates,
         templates=templates,
         limit_to_mask=str(limit_to_mask),

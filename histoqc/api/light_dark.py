@@ -7,7 +7,7 @@ from histoqc.LightDarkModule import getIntensityThresholdPercent as _getIntensit
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
     from .base_image import MaskStatisticsType
 
 __all__ = [
@@ -17,7 +17,7 @@ __all__ = [
 
 
 def get_intensity_threshold_otsu(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     local: bool = False,
     radius: float = 15.0,
@@ -26,7 +26,7 @@ def get_intensity_threshold_otsu(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _getIntensityThresholdOtsu,
         local=str(local),
         radius=radius,
@@ -35,7 +35,7 @@ def get_intensity_threshold_otsu(
 
 
 def get_intensity_threshold_percent(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     name: str = "classTask",
     lower_threshold: float = float("-inf"),
@@ -48,7 +48,7 @@ def get_intensity_threshold_percent(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _getIntensityThresholdPercent,
         name=name,
         lower_threshold=lower_threshold,

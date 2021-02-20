@@ -7,7 +7,7 @@ from histoqc.BrightContrastModule import getContrast as _getContrast
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
 
 __all__ = [
     'get_brightness_gray',
@@ -17,20 +17,20 @@ __all__ = [
 
 
 def get_brightness_gray(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True
 ) -> np.ndarray:
-    return pstate.call(_getBrightnessGray, limit_to_mask=str(limit_to_mask))
+    return pstate.histoqc_call(_getBrightnessGray, limit_to_mask=str(limit_to_mask))
 
 
 def get_brightness_by_channel_in_color_space(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True,
     to_color_space: str = "RGB",
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _getBrightnessByChannelinColorSpace,
         limit_to_mask=str(limit_to_mask),
         to_color_space=to_color_space,
@@ -38,8 +38,8 @@ def get_brightness_by_channel_in_color_space(
 
 
 def get_contrast(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True,
 ) -> np.ndarray:
-    return pstate.call(_getContrast, limit_to_mask=str(limit_to_mask))
+    return pstate.histoqc_call(_getContrast, limit_to_mask=str(limit_to_mask))

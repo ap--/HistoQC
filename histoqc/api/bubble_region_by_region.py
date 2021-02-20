@@ -7,7 +7,7 @@ from histoqc.BubbleRegionByRegion import detectSmoothness as _detectSmoothness
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
     from .base_image import MaskStatisticsType
 
 __all__ = [
@@ -17,7 +17,7 @@ __all__ = [
 
 
 def roi_wise(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     name: str = "classTask",
     level: int = 1,
@@ -26,13 +26,13 @@ def roi_wise(
 ) -> np.ndarray:
     if area_threshold is None:
         area_threshold = ""
-    return pstate.call(
+    return pstate.histoqc_call(
         _roiWise, name=name, level=level, win_size=win_size, area_threshold=area_threshold
     )
 
 
 def detect_smoothness(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     threshold: float = 0.01,
     kernel_size: int = 10,
@@ -42,7 +42,7 @@ def detect_smoothness(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _detectSmoothness,
         threshold=threshold,
         kernel_size=kernel_size,

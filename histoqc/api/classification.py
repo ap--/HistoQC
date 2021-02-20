@@ -8,7 +8,7 @@ from histoqc.ClassificationModule import byExampleWithFeatures as _byExampleWith
 if TYPE_CHECKING:
     from threading import Lock
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
     from .base_image import MaskStatisticsType
 
 __all__ = [
@@ -18,7 +18,7 @@ __all__ = [
 
 
 def pixel_wise(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     tsv_file: str,
     name: str = "classTask",
@@ -28,7 +28,7 @@ def pixel_wise(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _pixelWise,
         name=name,
         tsv_file=tsv_file,
@@ -38,7 +38,7 @@ def pixel_wise(
 
 
 def by_example_with_features(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     examples: str,
     features: str,
@@ -53,7 +53,7 @@ def by_example_with_features(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _byExampleWithFeatures,
         name=name,
         threshold=threshold,

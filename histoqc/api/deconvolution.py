@@ -6,7 +6,7 @@ from histoqc.DeconvolutionModule import seperateStains as _seperateStains
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
 
 __all__ = [
     'separate_stains',
@@ -28,12 +28,12 @@ StainMethods = Literal[
 
 
 def separate_stains(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     stain: StainMethods,
     use_mask: bool = True,
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _seperateStains,
         stain=stain,
         use_mask=str(use_mask),

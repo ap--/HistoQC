@@ -6,13 +6,13 @@ from histoqc.BaseImage import getMag as _getMag
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
 
 __all__ = ['get_mag', 'MaskStatisticsType']
 
 MaskStatisticsType = Literal["relative2mask", "absolute", "relative2image"]
 
 
-def get_mag(pstate: PipelineState, *, confirm_base_mag: str = "False") -> np.ndarray:
+def get_mag(pstate: PipelineCallable, *, confirm_base_mag: str = "False") -> np.ndarray:
     _cbm = str(confirm_base_mag)
-    return pstate.call(_getMag, confirm_base_mag=_cbm)
+    return pstate.histoqc_call(_getMag, confirm_base_mag=_cbm)

@@ -6,7 +6,7 @@ from histoqc.SaveModule import saveThumbnails as _saveThumbnails
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
 
 __all__ = [
     'save_final_mask',
@@ -15,23 +15,23 @@ __all__ = [
 
 
 def save_final_mask(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     use_mask: bool = True,
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _saveFinalMask,
         use_mask=str(use_mask),
     )
 
 
 def save_thumbnails(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     image_work_size: str = "1.25x",
     small_dim: int = 500,
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _saveThumbnails,
         image_work_size=image_work_size,
         small_dim=small_dim,

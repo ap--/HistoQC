@@ -7,27 +7,27 @@ from histoqc.AnnotationModule import geoJSONMask as _geoJSONMask
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
 
 __all__ = ['xml_mask', 'geojson_mask']
 
 
 def xml_mask(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     xml_filepath: Optional[str] = None,
     xml_suffix: str = "",
 ) -> np.ndarray:
-    return pstate.call(_xmlMask, xml_filepath=xml_filepath, xml_suffix=xml_suffix)
+    return pstate.histoqc_call(_xmlMask, xml_filepath=xml_filepath, xml_suffix=xml_suffix)
 
 
 def geojson_mask(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     geojson_filepath: Optional[str] = None,
     geojson_suffix: str = ""
 ) -> np.ndarray:
-    return pstate.call(
+    return pstate.histoqc_call(
         _geoJSONMask,
         geojson_filepath=geojson_filepath,
         geojson_suffix=geojson_suffix

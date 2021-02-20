@@ -8,7 +8,7 @@ from histoqc.MorphologyModule import fillSmallHoles as _fillSmallHoles
 
 if TYPE_CHECKING:
     import numpy as np
-    from ._pipeline import PipelineState
+    from ._pipeline import PipelineCallable
     from .base_image import MaskStatisticsType
 
 __all__ = [
@@ -19,7 +19,7 @@ __all__ = [
 
 
 def remove_small_objects(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     min_size: int = 64,
     mask_statistics: Optional[MaskStatisticsType] = None,
@@ -27,7 +27,7 @@ def remove_small_objects(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _removeSmallObjects,
         min_size=min_size,
         **extra,
@@ -35,7 +35,7 @@ def remove_small_objects(
 
 
 def remove_fatlike_tissue(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     fat_cell_size: int = 64,
     kernel_size: int = 3,
@@ -45,7 +45,7 @@ def remove_fatlike_tissue(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _removeFatlikeTissue,
         fat_cell_size=fat_cell_size,
         kernel_size=kernel_size,
@@ -55,7 +55,7 @@ def remove_fatlike_tissue(
 
 
 def fill_small_holes(
-    pstate: PipelineState,
+    pstate: PipelineCallable,
     *,
     min_size: int = 64,
     mask_statistics: Optional[MaskStatisticsType] = None,
@@ -63,7 +63,7 @@ def fill_small_holes(
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
-    return pstate.call(
+    return pstate.histoqc_call(
         _fillSmallHoles,
         min_size=min_size,
         **extra,
