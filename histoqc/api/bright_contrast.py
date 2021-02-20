@@ -1,4 +1,5 @@
 """pep8 shim for histoqc.BrightContrastModule with pep484 type annotations"""
+from typing import Literal
 from typing import TYPE_CHECKING
 
 from histoqc.BrightContrastModule import getBrightnessGray as _getBrightnessGray
@@ -15,6 +16,18 @@ __all__ = [
     'get_contrast',
 ]
 
+# http://scikit-image.org/docs/dev/api/skimage.color.html#skimage.color.convert_colorspace
+ColorSpaceType = Literal[
+    "RGB",
+    "HSV",
+    "RGB CIE",
+    "XYZ",
+    "YUV",
+    "YIQ",
+    "YPbPr",
+    "YCbCr",
+]
+
 
 def get_brightness_gray(
     pstate: PipelineCallable,
@@ -28,7 +41,7 @@ def get_brightness_by_channel_in_color_space(
     pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True,
-    to_color_space: str = "RGB",
+    to_color_space: ColorSpaceType = "RGB",
 ) -> np.ndarray:
     return pstate.histoqc_call(
         _getBrightnessByChannelinColorSpace,
