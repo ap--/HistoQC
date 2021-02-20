@@ -22,8 +22,9 @@ else:
 
 import numpy as np
 
-# circular import for alternative PipelineChain call interface
-from .. import api as _qc
+# imports for alternative PipelineChain call interface
+from . import _functions as _functions
+
 
 __all__ = [
     "PipelineCallable",
@@ -170,7 +171,7 @@ class PipelineState:
         )
 
     @classmethod
-    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> 'PipelineState':
+    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> PipelineState:
         ...
 
     def histoqc_call(self, func, **params) -> np.ndarray:
@@ -198,15 +199,15 @@ class PipelineChain:
         # update __dir__ with functions in submodules
         _dir = list(super().__dir__())
         _dir.extend(
-            name for name in _qc.__all__
-            if isinstance(getattr(_qc, name), types.FunctionType)
+            name for name in _functions.__all__
+            if isinstance(getattr(_functions, name), types.FunctionType)
         )
         return _dir
 
     def __getattr__(self, item):
         # allow chain.my_function_name call style
-        obj = getattr(_qc, item)
+        obj = getattr(_functions, item)
         if isinstance(obj, types.FunctionType):
-            return obj.__get__(self)
+            return obj.__get__(self, self.__class__)
         else:
             raise AttributeError(item)
