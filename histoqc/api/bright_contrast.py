@@ -1,6 +1,12 @@
 """pep8 shim for histoqc.BrightContrastModule with pep484 type annotations"""
-from typing import Literal
+import sys
+from typing import Optional
 from typing import TYPE_CHECKING
+
+if sys.version_info >= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
 
 from histoqc.BrightContrastModule import getBrightnessGray as _getBrightnessGray
 from histoqc.BrightContrastModule import getBrightnessByChannelinColorSpace as _getBrightnessByChannelinColorSpace
@@ -33,7 +39,7 @@ def get_brightness_gray(
     pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(_getBrightnessGray, limit_to_mask=str(limit_to_mask))
 
 
@@ -42,7 +48,7 @@ def get_brightness_by_channel_in_color_space(
     *,
     limit_to_mask: bool = True,
     to_color_space: ColorSpaceType = "RGB",
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(
         _getBrightnessByChannelinColorSpace,
         limit_to_mask=str(limit_to_mask),
@@ -54,5 +60,5 @@ def get_contrast(
     pstate: PipelineCallable,
     *,
     limit_to_mask: bool = True,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(_getContrast, limit_to_mask=str(limit_to_mask))

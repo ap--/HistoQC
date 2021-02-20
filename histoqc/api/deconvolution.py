@@ -1,6 +1,12 @@
 """pep8 shim for histoqc.DeconvolutionModule with pep484 type annotations"""
-from typing import Literal
+import sys
+from typing import Optional
 from typing import TYPE_CHECKING
+
+if sys.version_info >= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
 
 from histoqc.DeconvolutionModule import seperateStains as _seperateStains
 
@@ -32,7 +38,7 @@ def separate_stains(
     *,
     stain: StainMethods,
     use_mask: bool = True,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(
         _seperateStains,
         stain=stain,

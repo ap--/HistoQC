@@ -22,7 +22,7 @@ def get_intensity_threshold_otsu(
     local: bool = False,
     radius: float = 15.0,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
@@ -44,7 +44,7 @@ def get_intensity_threshold_percent(
     upper_variance: float = float("inf"),
     invert: bool = False,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics

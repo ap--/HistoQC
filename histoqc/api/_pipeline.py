@@ -1,4 +1,6 @@
 import copy
+import sys
+import warnings
 from collections import ChainMap
 from contextlib import contextmanager
 from typing import Any
@@ -9,7 +11,12 @@ from typing import NamedTuple
 from typing import Optional
 from typing import Protocol
 from typing import Tuple
-from typing import TypedDict
+from typing import cast
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
 
 import numpy as np
 
@@ -37,7 +44,7 @@ class _PState(TypedDict):
 
 
 class _PUpdate(NamedTuple):
-    updated: Dict[str, Any]
+    updated: _PState
     added: Dict[str, Any]
     warnings: List[str]
 
@@ -47,12 +54,12 @@ class _BaseImageHelper(ChainMap):
     def __init__(self, i, c, s, image_thumb_getter: Callable[[str], np.ndarray]):
         u = self._reset_updates()
         super().__init__(u, i, c, s)
-        self._print_list = {}
+        self._print_list: Dict[str, str] = {}
         self._image_thumb_getter = image_thumb_getter
 
     @staticmethod
-    def _reset_updates(updates: Optional[dict] = None):
-        u = {"warnings": []}
+    def _reset_updates(updates: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        u: Dict[str, Any] = {"warnings": []}
         if updates is None:
             return u
         else:
@@ -70,7 +77,10 @@ class _BaseImageHelper(ChainMap):
 
     def collect_state(self, *, clear: bool = True) -> _PUpdate:
         """collect state changes"""
-        updates, image_info, pconfig, pstate = self.maps
+        updates, image_info, pconfig, pstate = cast(
+            Tuple[Dict[str, Any], _ImageInfo, _PConfig, _PState],
+            self.maps
+        )
 
         _overlap = set(updates).intersection(image_info)
         if _overlap:
@@ -82,16 +92,16 @@ class _BaseImageHelper(ChainMap):
         # collect all info
         if not clear:
             updates = copy.copy(updates)
-        warnings = updates.pop("warnings")
+        _warnings = updates.pop("warnings")
 
-        updated_state = {k: updates.pop(k) for k in pstate if k in updates}
+        updated_state = cast(_PState, {k: updates.pop(k) for k in pstate if k in updates})
         added_state = {**updates}
 
         # reset updates
         self._reset_updates(updates)
 
         # return state
-        return _PUpdate(updated_state, added_state, warnings)
+        return _PUpdate(updated_state, added_state, _warnings)
 
 
 class PipelineCallable(Protocol):
@@ -113,7 +123,7 @@ class PipelineState:
         self._image_info: _ImageInfo = image_info
         self._pconfig: _PConfig = pipe_config
         self._pstate: _PState = pipe_state
-        self._warnings = []
+        self._warnings: List[str] = []
 
     @property
     def warnings(self) -> List[str]:
@@ -137,13 +147,16 @@ class PipelineState:
             w = state_changes.warnings
             raise RuntimeError(f"caught {len(w)} warnings: {w!r}")
         if update_state:
-            self._pstate.update(state_changes.added)
-            self._pstate.update(state_changes.updated)
+            if state_changes.added:
+                warnings.warn(f"added keys: {state_changes.added!r} to state")
+            self._pstate.update(
+                **state_changes.added,
+                **state_changes.updated,
+            )  # type: ignore
 
     def get_image_thumbnail(self, dimension, *, image_info: Optional[_ImageInfo] = None) -> np.ndarray:
         ...
 
-    @staticmethod
     def _init_state(self, image_info: _ImageInfo, pipe_config: _PConfig) -> _PState:
         dim = pipe_config["image_work_size"]
         _thumbnail_arr = self.get_image_thumbnail(dim, image_info=image_info)

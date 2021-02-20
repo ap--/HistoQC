@@ -17,7 +17,7 @@ def xml_mask(
     *,
     xml_filepath: Optional[str] = None,
     xml_suffix: str = "",
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(_xmlMask, xml_filepath=xml_filepath, xml_suffix=xml_suffix)
 
 
@@ -26,7 +26,7 @@ def geojson_mask(
     *,
     geojson_filepath: Optional[str] = None,
     geojson_suffix: str = ""
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(
         _geoJSONMask,
         geojson_filepath=geojson_filepath,

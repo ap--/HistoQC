@@ -19,7 +19,7 @@ def identify_blurry_regions(
     blur_threshold: float = 0.1,
     image_work_size: str = "2.5x",
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics

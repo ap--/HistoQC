@@ -23,11 +23,13 @@ def roi_wise(
     level: int = 1,
     win_size: int = 2048,
     area_threshold: Optional[int] = None,
-) -> np.ndarray:
-    if area_threshold is None:
-        area_threshold = ""
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(
-        _roiWise, name=name, level=level, win_size=win_size, area_threshold=area_threshold
+        _roiWise,
+        name=name,
+        level=level,
+        win_size=win_size,
+        area_threshold=area_threshold if area_threshold is not None else ""  # used as default in _roiWise
     )
 
 
@@ -38,7 +40,7 @@ def detect_smoothness(
     kernel_size: int = 10,
     min_object_size: int = 100,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics

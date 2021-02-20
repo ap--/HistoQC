@@ -20,11 +20,11 @@ __all__ = [
 ]
 
 
-def get_basic_stats(pstate: PipelineCallable) -> np.ndarray:
+def get_basic_stats(pstate: PipelineCallable) -> Optional[np.ndarray]:
     return pstate.histoqc_call(_getBasicStats)
 
 
-def final_computations(pstate: PipelineCallable) -> np.ndarray:
+def final_computations(pstate: PipelineCallable) -> Optional[np.ndarray]:
     return pstate.histoqc_call(_finalComputations)
 
 
@@ -33,7 +33,7 @@ def final_processing_spur(
     *,
     disk_radius: int = 25,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
@@ -45,7 +45,7 @@ def final_processing_area(
     *,
     area_threshold: int = 1000,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics

@@ -1,4 +1,5 @@
 """pep8 shim for histoqc.SaveModule with pep484 type annotations"""
+from typing import Optional
 from typing import TYPE_CHECKING
 
 from histoqc.SaveModule import saveFinalMask as _saveFinalMask
@@ -18,7 +19,7 @@ def save_final_mask(
     pstate: PipelineCallable,
     *,
     use_mask: bool = True,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(
         _saveFinalMask,
         use_mask=str(use_mask),
@@ -30,7 +31,7 @@ def save_thumbnails(
     *,
     image_work_size: str = "1.25x",
     small_dim: int = 500,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     return pstate.histoqc_call(
         _saveThumbnails,
         image_work_size=image_work_size,

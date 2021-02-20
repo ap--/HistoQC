@@ -1,3 +1,4 @@
+# type: ignore
 from ._pipeline import *
 from .annotation import *
 from .base_image import *

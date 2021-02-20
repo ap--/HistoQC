@@ -23,7 +23,7 @@ def remove_small_objects(
     *,
     min_size: int = 64,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
@@ -41,7 +41,7 @@ def remove_fatlike_tissue(
     kernel_size: int = 3,
     max_keep_size: int = 1000,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
@@ -59,7 +59,7 @@ def fill_small_holes(
     *,
     min_size: int = 64,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics

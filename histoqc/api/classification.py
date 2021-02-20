@@ -24,7 +24,7 @@ def pixel_wise(
     name: str = "classTask",
     threshold: float = 0.01,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
@@ -49,7 +49,7 @@ def by_example_with_features(
     area_threshold: int = 5,
     dilate_kernel_size: int = 0,
     mask_statistics: Optional[MaskStatisticsType] = None,
-) -> np.ndarray:
+) -> Optional[np.ndarray]:
     extra = {}
     if mask_statistics is not None:
         extra["mask_statistics"] = mask_statistics
