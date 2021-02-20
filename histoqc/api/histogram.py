@@ -1,4 +1,5 @@
 """pep8 shim for histoqc.HistogramModule with pep484 type annotations"""
+from typing import List
 from typing import TYPE_CHECKING
 
 from histoqc.HistogramModule import getHistogram as _getHistogram
@@ -30,13 +31,13 @@ def get_histogram(
 def compare_to_templates(
     pstate: PipelineCallable,
     *,
-    templates: str,
+    templates: List[str],
     limit_to_mask: bool = True,
     bins: int = 20,
 ) -> np.ndarray:
     return pstate.histoqc_call(
         _compareToTemplates,
-        templates=templates,
+        templates="\n".join(templates),
         limit_to_mask=str(limit_to_mask),
         bins=bins,
     )
