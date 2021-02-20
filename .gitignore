@@ -16,7 +16,6 @@ wheels/
 *.whl
 .coverage*
 MANIFEST
-histoqc/tests/data/*
 
 .venv
 venv/
@@ -24,4 +23,7 @@ htmlcov/
 
 histoqc/_version.py
 environment.yml
+
+histoqc/tests/data/*
+histoqc_output_*/
 
