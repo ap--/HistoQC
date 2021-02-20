@@ -1,6 +1,7 @@
 from __future__ import annotations
 import copy
 import sys
+import types
 import warnings
 from collections import ChainMap
 from contextlib import contextmanager
@@ -20,6 +21,9 @@ else:
     from typing_extensions import TypedDict
 
 import numpy as np
+
+# circular import for alternative PipelineChain call interface
+from .. import api as _qc
 
 __all__ = [
     "PipelineCallable",
@@ -189,3 +193,20 @@ class PipelineChain:
             for func, params in self._steps:
                 _ = func(s, params)
         return pstate.mask
+
+    def __dir__(self):
+        # update __dir__ with functions in submodules
+        _dir = list(super().__dir__())
+        _dir.extend(
+            name for name in _qc.__all__
+            if isinstance(getattr(_qc, name), types.FunctionType)
+        )
+        return _dir
+
+    def __getattr__(self, item):
+        # allow chain.my_function_name call style
+        obj = getattr(_qc, item)
+        if isinstance(obj, types.FunctionType):
+            return obj.__get__(self)
+        else:
+            raise AttributeError(item)
