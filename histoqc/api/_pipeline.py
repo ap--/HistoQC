@@ -16,6 +16,7 @@ import numpy as np
 __all__ = [
     "PipelineCallable",
     "PipelineChain",
+    "PipelineState",
 ]
 
 
@@ -95,7 +96,7 @@ class _BaseImageHelper(ChainMap):
 
 class PipelineCallable(Protocol):
 
-    def histoqc_call(self, func: Callable[[_BaseImageHelper, Dict[str, Any]], Any], **params) -> np.ndarray:
+    def histoqc_call(self, func, **params) -> Optional[np.ndarray]:
         ...
 
 
@@ -151,7 +152,7 @@ class PipelineState:
         )
 
     @classmethod
-    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> 'PipelineCallable':
+    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> 'PipelineState':
         ...
 
     def histoqc_call(self, func, **params) -> np.ndarray:
