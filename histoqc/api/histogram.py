@@ -1,4 +1,5 @@
 """pep8 shim for histoqc.HistogramModule with pep484 type annotations"""
+from __future__ import annotations
 from typing import List
 from typing import Optional
 from typing import TYPE_CHECKING

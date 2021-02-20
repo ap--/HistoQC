@@ -1,4 +1,5 @@
 """pep8 shim for histoqc.BaseImage with pep484 type annotations"""
+from __future__ import annotations
 import sys
 from typing import Optional
 from typing import TYPE_CHECKING
