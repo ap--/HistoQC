@@ -1,23 +1,67 @@
-from histoqc.ClassificationModule import byExampleWithFeatures as by_example_with_features
-from histoqc.ClassificationModule import compute_features as compute_features
-from histoqc.ClassificationModule import compute_frangi as compute_frangi
-from histoqc.ClassificationModule import compute_gabor as compute_gabor
-from histoqc.ClassificationModule import compute_gaussian as compute_gaussian
-from histoqc.ClassificationModule import compute_laplace as compute_laplace
-from histoqc.ClassificationModule import compute_lbp as compute_lbp
-from histoqc.ClassificationModule import compute_median as compute_median
-from histoqc.ClassificationModule import compute_rgb as compute_rgb
-from histoqc.ClassificationModule import pixelWise as pixel_wise
+"""pep8 shim for histoqc.ClassificationModule with pep484 type annotations"""
+from typing import Optional
+from typing import TYPE_CHECKING
+
+from histoqc.ClassificationModule import pixelWise as _pixelWise
+from histoqc.ClassificationModule import byExampleWithFeatures as _byExampleWithFeatures
+
+if TYPE_CHECKING:
+    from threading import Lock
+    import numpy as np
+    from histoqc.pep8style._pipeline import PipelineState
+    from histoqc.pep8style.base_image import MaskStatisticsType
 
 __all__ = [
     'pixel_wise',
-    'compute_rgb',
-    'compute_laplace',
-    'compute_lbp',
-    'compute_gaussian',
-    'compute_median',
-    'compute_gabor',
-    'compute_frangi',
-    'compute_features',
-    'by_example_with_features'
+    'by_example_with_features',
 ]
+
+
+def pixel_wise(
+    pstate: PipelineState,
+    *,
+    tsv_file: str,
+    name: str = "classTask",
+    threshold: float = 0.01,
+    mask_statistics: Optional[MaskStatisticsType] = None,
+) -> np.ndarray:
+    extra = {}
+    if mask_statistics is not None:
+        extra["mask_statistics"] = mask_statistics
+    return pstate.call(
+        _pixelWise,
+        name=name,
+        tsv_file=tsv_file,
+        threshold=threshold,
+        **extra,
+    )
+
+
+def by_example_with_features(
+    pstate: PipelineState,
+    *,
+    examples: str,
+    features: str,
+    lock: Lock,
+    shared_dict: dict,
+    name: str = "classTask",
+    threshold: float = 0.5,
+    area_threshold: int = 5,
+    dilate_kernel_size: int = 0,
+    mask_statistics: Optional[MaskStatisticsType] = None,
+) -> np.ndarray:
+    extra = {}
+    if mask_statistics is not None:
+        extra["mask_statistics"] = mask_statistics
+    return pstate.call(
+        _byExampleWithFeatures,
+        name=name,
+        threshold=threshold,
+        examples=examples,
+        features=features,
+        lock=lock,
+        shared_dict=shared_dict,
+        area_threshold=area_threshold,
+        dilate_kernel_size=dilate_kernel_size,
+        **extra,
+    )

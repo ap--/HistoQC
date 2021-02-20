@@ -1,5 +1,18 @@
-from histoqc.BaseImage import BaseImage
-from histoqc.BaseImage import getMag as get_mag
-from histoqc.BaseImage import printMaskHelper as print_mask_helper
+"""pep8 shim for histoqc.BaseImage with pep484 type annotations"""
+from typing import Literal
+from typing import TYPE_CHECKING
 
-__all__ = ['print_mask_helper', 'get_mag', 'BaseImage']
+from histoqc.BaseImage import getMag as _getMag
+
+if TYPE_CHECKING:
+    import numpy as np
+    from histoqc.pep8style._pipeline import PipelineState
+
+__all__ = ['get_mag', 'MaskStatisticsType']
+
+MaskStatisticsType = Literal["relative2mask", "absolute", "relative2image"]
+
+
+def get_mag(pstate: PipelineState, *, confirm_base_mag: str = "False") -> np.ndarray:
+    _cbm = str(confirm_base_mag)
+    return pstate.call(_getMag, confirm_base_mag=_cbm)

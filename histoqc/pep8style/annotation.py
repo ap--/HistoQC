@@ -1,15 +1,34 @@
-from histoqc.AnnotationModule import geoJSONMask as geo_json_mask
-from histoqc.AnnotationModule import get_points_from_geojson as get_points_from_geojson
-from histoqc.AnnotationModule import get_points_from_xml as get_points_from_xml
-from histoqc.AnnotationModule import mask_out_annotation as mask_out_annotation
-from histoqc.AnnotationModule import resize_points as resize_points
-from histoqc.AnnotationModule import xmlMask as xml_mask
+"""pep8 shim for histoqc.AnnotationModule with pep484 type annotations"""
+from typing import Optional
+from typing import TYPE_CHECKING
 
-__all__ = [
-    'get_points_from_xml',
-    'get_points_from_geojson',
-    'resize_points',
-    'mask_out_annotation',
-    'xml_mask',
-    'geo_json_mask'
-]
+from histoqc.AnnotationModule import xmlMask as _xmlMask
+from histoqc.AnnotationModule import geoJSONMask as _geoJSONMask
+
+if TYPE_CHECKING:
+    import numpy as np
+    from histoqc.pep8style._pipeline import PipelineState
+
+__all__ = ['xml_mask', 'geojson_mask']
+
+
+def xml_mask(
+    pstate: PipelineState,
+    *,
+    xml_filepath: Optional[str] = None,
+    xml_suffix: str = "",
+) -> np.ndarray:
+    return pstate.call(_xmlMask, xml_filepath=xml_filepath, xml_suffix=xml_suffix)
+
+
+def geojson_mask(
+    pstate: PipelineState,
+    *,
+    geojson_filepath: Optional[str] = None,
+    geojson_suffix: str = ""
+) -> np.ndarray:
+    return pstate.call(
+        _geoJSONMask,
+        geojson_filepath=geojson_filepath,
+        geojson_suffix=geojson_suffix
+    )
