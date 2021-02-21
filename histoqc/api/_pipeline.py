@@ -140,7 +140,7 @@ class PipelineState:
             raise RuntimeError(f"caught {len(w)} warnings: {w!r}")
         if update_state:
             if state_changes.added:
-                warnings.warn(f"added keys: {state_changes.added!r} to state")
+                warnings.warn(f"added keys: {dict((k, type(v)) for k, v in state_changes.added.items())!r} to state")
             self._base_image.update(
                 **state_changes.added,
                 **state_changes.updated,
