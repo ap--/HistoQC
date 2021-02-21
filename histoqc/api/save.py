@@ -36,5 +36,5 @@ def save_thumbnails(
     return pstate.histoqc_call(
         _saveThumbnails,
         image_work_size=image_work_size,
-        small_dim=small_dim,
+        small_dim=str(small_dim),
     )

@@ -21,7 +21,7 @@ def roi_wise(
     pstate: PipelineCallable,
     *,
     name: str = "classTask",
-    level: int = 1,
+    level: int = 0,  # 0 might be a better default than 1
     win_size: int = 2048,
     area_threshold: Optional[int] = None,
 ) -> Optional[np.ndarray]:

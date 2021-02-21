@@ -56,6 +56,6 @@ def get_intensity_threshold_percent(
         upper_threshold=upper_threshold,
         lower_variance=lower_variance,
         upper_variance=upper_variance,
-        invert=invert,
+        invert=str(invert),
         **extra,
     )
