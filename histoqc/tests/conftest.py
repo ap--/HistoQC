@@ -38,3 +38,10 @@ def svs_small():
         pytest.fail("incorrect md5")
     else:
         yield img_fn.absolute()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def setup_matplotlib_backend():
+    from histoqc._pipeline import setup_plotting_backend
+    setup_plotting_backend()
+    yield
