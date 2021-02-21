@@ -61,7 +61,13 @@ def roiWise(s, params):
             region = np.asarray(osh.read_region((x, y), 1, (win_size, win_size)))
             region = region[:, :, 0:3]  # remove alpha channel
             g = rgb2gray(region)
-            feat = frangi(g, frangi_scale_range, frangi_scale_step, frangi_beta1, frangi_beta2, frangi_black_ridges)
+            feat = frangi(g,
+                          scale_range=frangi_scale_range,
+                          scale_step=frangi_scale_step,
+                          beta=frangi_beta1,
+                          gamma=frangi_beta2,
+                          black_ridges=frangi_black_ridges
+                          )
             feat = feat / 8.875854409275627e-08
             region_mask = np.bitwise_and(g < .3, feat > 5)
             region_mask = remove_small_objects(region_mask, min_size=100, in_place=True)
