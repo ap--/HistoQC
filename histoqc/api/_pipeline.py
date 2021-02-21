@@ -1,5 +1,6 @@
 from __future__ import annotations
 import copy
+import os
 import sys
 import types
 import warnings
@@ -24,7 +25,7 @@ import numpy as np
 
 # imports for alternative PipelineChain call interface
 from . import _functions as _functions
-
+from ..BaseImage import BaseImage
 
 __all__ = [
     "PipelineCallable",
@@ -57,11 +58,11 @@ class _PUpdate(NamedTuple):
 
 class _BaseImageHelper(ChainMap):
 
-    def __init__(self, i, c, s, image_thumb_getter: Callable[[str], np.ndarray]):
+    def __init__(self, base_image: BaseImage):
+        self._base_image = base_image
         u = self._reset_updates()
-        super().__init__(u, i, c, s)
+        super().__init__(u, base_image)
         self._print_list: Dict[str, str] = {}
-        self._image_thumb_getter = image_thumb_getter
 
     @staticmethod
     def _reset_updates(updates: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -79,28 +80,18 @@ class _BaseImageHelper(ChainMap):
 
     # noinspection PyPep8Naming
     def getImgThumb(self, dim):
-        return self._image_thumb_getter(dim)
+        return self._base_image.getImgThumb(dim)
 
     def collect_state(self, *, clear: bool = True) -> _PUpdate:
         """collect state changes"""
-        updates, image_info, pconfig, pstate = cast(
-            Tuple[Dict[str, Any], _ImageInfo, _PConfig, _PState],
-            self.maps
-        )
-
-        _overlap = set(updates).intersection(image_info)
-        if _overlap:
-            raise RuntimeError(f"image_info key(s): {_overlap!r} updated")
-        _overlap = set(updates).intersection(pconfig)
-        if _overlap:
-            raise RuntimeError(f"pipeline_config key(s): {_overlap!r} updated")
+        updates = cast(Dict[str, Any], self.maps[0])
 
         # collect all info
         if not clear:
             updates = copy.copy(updates)
         _warnings = updates.pop("warnings")
 
-        updated_state = cast(_PState, {k: updates.pop(k) for k in pstate if k in updates})
+        updated_state = {k: updates.pop(k) for k in self._base_image if k in updates}
         added_state = {**updates}
 
         # reset updates
@@ -118,61 +109,42 @@ class PipelineCallable(Protocol):
 
 class PipelineState:
 
+    # TODO: make calling interface exlicit
     def __init__(
         self,
-        image_info: _ImageInfo,
-        pipe_config: _PConfig,
-        pipe_state: Optional[_PState] = None
+        fname,
+        fname_outdir,
+        params
     ):
-        if pipe_state is None:
-            pipe_state = self._init_state(image_info, pipe_config)
-        self._image_info: _ImageInfo = image_info
-        self._pconfig: _PConfig = pipe_config
-        self._pstate: _PState = pipe_state
-        self._warnings: List[str] = []
+        fname = os.fspath(fname)
+        fname_outdir = os.fspath(fname_outdir)
+        self._base_image = BaseImage(fname, fname_outdir, params)
 
     @property
     def warnings(self) -> List[str]:
-        return self._warnings
+        return self._base_image["warnings"]
 
     @property
     def mask(self) -> np.ndarray:
-        return self._pstate["img_mask_use"]
+        return self._base_image["img_mask_use"]
 
     @contextmanager
     def base_image(self, *, update_state: bool = True, raise_if_warnings: bool = False):
-        s = _BaseImageHelper(
-            self._image_info, self._pconfig, self._pstate,
-            image_thumb_getter=self.get_image_thumbnail
-        )
+        s = _BaseImageHelper(self._base_image)
         # yield the state
         yield s
         state_changes = s.collect_state()
-        self._warnings.extend(state_changes.warnings)
+        self.warnings.extend(state_changes.warnings)
         if raise_if_warnings and state_changes.warnings:
             w = state_changes.warnings
             raise RuntimeError(f"caught {len(w)} warnings: {w!r}")
         if update_state:
             if state_changes.added:
                 warnings.warn(f"added keys: {state_changes.added!r} to state")
-            self._pstate.update(
+            self._base_image.update(
                 **state_changes.added,
                 **state_changes.updated,
             )  # type: ignore
-
-    def get_image_thumbnail(self, dimension, *, image_info: Optional[_ImageInfo] = None) -> np.ndarray:
-        ...
-
-    def _init_state(self, image_info: _ImageInfo, pipe_config: _PConfig) -> _PState:
-        dim = pipe_config["image_work_size"]
-        _thumbnail_arr = self.get_image_thumbnail(dim, image_info=image_info)
-        return _PState(
-            img_mask_use=np.ones(_thumbnail_arr.shape[0:2], dtype=bool)
-        )
-
-    @classmethod
-    def from_image(cls, image_fn: str, pipe_config: Optional[_PConfig] = None) -> PipelineState:
-        ...
 
     def histoqc_call(self, func, **params) -> np.ndarray:
         with self.base_image() as s:
