@@ -434,7 +434,7 @@ g.tick > text {
 
 #overlay-image > figure {
 	/*background-image: url("../Data/output/68235.svs/68235.svs_mask_use.png");*/
-	background-image: url("../../../Data/TCGA-BH-A0BQ-01A-01-BSA.bad7666c-e404-4d97-af8d-2335bf33f31c.svs_thumb.png");
+	/*background-image: url("../../../Data/TCGA-BH-A0BQ-01A-01-BSA.bad7666c-e404-4d97-af8d-2335bf33f31c.svs_thumb.png");*/
 	background-position: 50% 50%;
 	max-width: 100%;
 	max-height: 90%;
