@@ -9,6 +9,9 @@ import sys
 import time
 from functools import partial
 
+from fsspec.core import get_fs_token_paths
+from fsspec.utils import get_protocol
+
 from histoqc._pipeline import BatchedResultFile
 from histoqc._pipeline import MultiProcessingLogManager
 from histoqc._pipeline import load_pipeline
@@ -123,6 +126,8 @@ def main(argv=None):
 
     # --- receive input file list (there are 3 options) -----------------------
     args.basepath = os.path.expanduser(args.basepath)
+    is_fsspec = get_protocol(args.basepath) != "file"
+
     if len(args.input_pattern) > 1:
         # more than one input_pattern is interpreted as a list of files
         # (basepath is ignored)
@@ -141,7 +146,17 @@ def main(argv=None):
     else:
         # input_pattern is a glob pattern
         pth = os.path.join(args.basepath, args.input_pattern[0])
-        files = glob.glob(pth, recursive=True)
+        if not is_fsspec:
+            # glob locally
+            files = glob.glob(pth, recursive=True)
+        else:
+            # glob remotely
+            fs, _, path = get_fs_token_paths(args.basepath, mode="rb")
+            paths = fs.glob(os.path.join(path, args.input_pattern[0]))
+            files = [
+                fs.unstrip_protocol(p)
+                for p in paths
+            ]
 
     lm.logger.info("-" * 80)
     num_files = len(files)

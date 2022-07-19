@@ -55,11 +55,11 @@ class BaseImage(dict):
         self["output"] = []
 
         # these 2 need to be first for UI to work
-        self.addToPrintList("filename", os.path.basename(fname))
+        self.addToPrintList("filename", os.path.basename(fname))  # this works with s3://bucket/myfile.svs
         self.addToPrintList("comments", " ")
 
-        self["outdir"] = fname_outdir
-        self["dir"] = os.path.dirname(fname)
+        self["outdir"] = fname_outdir  # outdir seems to be only used for saving. so should be local
+        self["dir"] = os.path.dirname(fname)  # dir seems to be only used in the annotation module. so ignore for now
 
         self["os_handle"] = tiffslide.TiffSlide(fname)
         self["image_base_size"] = self["os_handle"].dimensions
