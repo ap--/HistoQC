@@ -3,6 +3,8 @@
 serves the histoqc.ui from the package data
 """
 import contextlib
+import glob
+import json
 import os.path
 import socket
 import tempfile
@@ -34,13 +36,36 @@ class HistoQCHTTPRequestHandler(SimpleHTTPRequestHandler):
     def translate_path(self, path):
         path = super().translate_path(path)
 
-        # in case the a resource under DATA_URL_PATH is requested,
+        # in case a resource under DATA_URL_PATH is requested,
         # redirect to the data_directory
         _dpth = os.path.join(self.directory, self.DATA_URL_PATH)
         if os.path.commonpath([_dpth]) == os.path.commonpath([_dpth, path]):
-            return os.path.join(self.data_directory, os.path.relpath(path, _dpth))
+            rpath = os.path.relpath(path, _dpth)
+            if rpath == ".results.index.json":
+                self._generate_dynamic_results_index()
+            return os.path.join(self.data_directory, rpath)
 
         return path
+
+    def _generate_dynamic_results_index(self):
+        """write a json of possible result.tsv files"""
+        results = glob.glob(os.path.join(self.data_directory, "*/results.tsv"))
+        # only keep the names
+        results = [
+            os.path.relpath(x, self.data_directory)
+            for x in results
+        ]
+
+        fn = os.path.join(self.data_directory, ".results.index.json")
+        fd, tmp_path = tempfile.mkstemp(dir=self.data_directory)
+        try:
+            with open(fd, "w") as f:
+                json.dump({"results": results}, f)
+            os.replace(tmp_path, fn)
+        except BaseException:
+            os.remove(tmp_path)
+            raise
+        return
 
 
 @contextlib.contextmanager

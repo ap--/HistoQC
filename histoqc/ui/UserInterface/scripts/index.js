@@ -1,6 +1,30 @@
 $(document).ready(function () {
 	console.log("[LOG] Document ready.")
 
+	// check if a dataset index is available
+	$.getJSON("/Data/.results.index.json", function (data) {
+		const results = data["results"];
+		if (results.length === 0) {
+			// no indexed results available
+			console.log("[LOG] No results indexed.")
+		} else {
+			// render a clickable button for each discovered result
+			const uploadButtonContainer = $("#upload-button");
+			uploadButtonContainer.find("label").hide();
+
+			for (const result of results) {
+				console.log("[LOG] Adding from indexed result: " + result);
+				const selectButton = $(
+					'<button class="btn btn-primary btn-results-index">' + result + '</button>'
+				);
+				selectButton.click({urlpath: result}, function (ev) {
+					load_from_ui(ev.data.urlpath);
+				})
+				uploadButtonContainer.append(selectButton);
+			}
+		}
+	});
+
 	// app entrance. func `load_raw_data` at data_load.js.
 	$("#upload-input").change(load_raw_data);
 	// app exit. back to the uploading page, reset to the init structure.

@@ -69,6 +69,11 @@ th {
 	display: none;
 }
 
+.btn-results-index {
+	display: block;
+	margin: 5px auto 0;
+}
+
 #table-view {
 	display: none;
 	height: 230px;
