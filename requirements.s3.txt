@@ -1,0 +1,11 @@
+tiffslide
+scikit-image==0.18.1
+scikit-learn==0.24.1
+numpy==1.20.1
+scipy==1.6.1
+matplotlib==3.3.4
+dill==0.3.3
+fsspec
+s3fs
+pytest
+importlib-resources
