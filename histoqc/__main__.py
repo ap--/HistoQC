@@ -151,7 +151,7 @@ def main(argv=None):
             files = glob.glob(pth, recursive=True)
         else:
             # glob remotely
-            fs, _, path = get_fs_token_paths(args.basepath, mode="rb")
+            fs, _, [path] = get_fs_token_paths(args.basepath, mode="rb")
             paths = fs.glob(os.path.join(path, args.input_pattern[0]))
             files = [
                 fs.unstrip_protocol(p)
