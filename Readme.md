@@ -178,6 +178,28 @@ python -m histoqc.config --show ihc > myconfig_ihc.ini
 See [wiki](https://github.com/choosehappy/HistoQC/wiki)
 
 
+## Accessing cloud storage
+
+**Note:** this is experimental... feel free to pick up the work from here...
+
+To run histoqc natively on cloud storage on files supported by
+[tiffslide](https://github.com/bayer-science-for-a-better-life/tiffslide) do:
+
+```shell
+pip install git+https://github.com/bayer-science-for-a-better-life/HistoQC.git@feature/cloud-support-via-tiffslide
+# optionally install s3fs, gcsfs, etc...
+pip install s3fs
+
+export AWS_PROFILE=myprofile
+# or export AWS_ACCESS_KEY_ID=...
+#    export AWS_SECRET_ACCESS_KEY=...
+python -m histoqc -p s3://my-bucket/somepath/ "**/*.svs"
+```
+
+This will load files dynamically from the cloud bucket. And only load as much
+data as HistoQC is actually requesting.
+
+
 # Notes
 
 Information from HistoQC users appears below:
