@@ -13,7 +13,7 @@ from histoqc._pipeline import setup_plotting_backend
 
 def worker_setup(c):
     """needed for multiprocessing worker setup"""
-    setup_plotting_backend()
+    setup_plotting_backend(force_headless=True)
     load_pipeline(config=c)
 
 

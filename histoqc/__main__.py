@@ -175,7 +175,7 @@ def main(argv=None):
         'force': args.force,
     }
     failed = mpm.list()
-    setup_plotting_backend(lm.logger)
+    setup_plotting_backend(lm.logger, force_headless=is_fsspec)
 
     try:
         if args.nprocesses > 1:

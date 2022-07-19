@@ -188,7 +188,7 @@ def log_pipeline(config, log_manager):
 
 # --- worker process helpers ------------------------------------------
 
-def setup_plotting_backend(logger=None):
+def setup_plotting_backend(logger=None, force_headless=False):
     """loads the correct matplotlib backend
 
     Parameters
@@ -197,9 +197,12 @@ def setup_plotting_backend(logger=None):
         the logging.Logger instance
     """
     import matplotlib
-    if platform.system() != "Windows" and not os.environ.get('DISPLAY'):
+    if force_headless or (platform.system() != "Windows" and not os.environ.get('DISPLAY')):
         if logger is not None:
-            logger.info('no display found. Using non-interactive Agg backend')
+            if force_headless:
+                logger.info('force_headless=True. Using non-interactive Agg backend')
+            elif not os.environ.get('DISPLAY'):
+                logger.info('no display found. Using non-interactive Agg backend')
         matplotlib.use('Agg')
     else:
         matplotlib.use('TkAgg')
