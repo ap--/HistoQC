@@ -1,4 +1,4 @@
-openslide-python==1.1.2
+tiffslide
 scikit-image==0.18.1
 scikit-learn==0.24.1
 numpy==1.20.1

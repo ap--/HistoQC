@@ -5,8 +5,9 @@ import inspect
 import zlib, dill
 from distutils.util import strtobool
 
-#os.environ['PATH'] = 'C:\\research\\openslide\\bin' + ';' + os.environ['PATH'] #can either specify openslide bin path in PATH, or add it dynamically
-import openslide
+# os.environ['PATH'] = 'C:\\research\\openslide\\bin' + ';' + os.environ['PATH']
+# can either specify openslide bin path in PATH, or add it dynamically
+import tiffslide
 
 
 def printMaskHelper(type, prev_mask, curr_mask):
@@ -28,7 +29,7 @@ def printMaskHelper(type, prev_mask, curr_mask):
 def getMag(s, params):
     logging.info(f"{s['filename']} - \tgetMag")
     osh = s["os_handle"]
-    mag = osh.properties.get("openslide.objective-power", "NA")
+    mag = osh.properties.get("tiffslide.objective-power", "NA")
     if (
             mag == "NA"):  # openslide doesn't set objective-power for all SVS files: https://github.com/openslide/openslide/issues/247
         mag = osh.properties.get("aperio.AppMag", "NA")
@@ -60,7 +61,7 @@ class BaseImage(dict):
         self["outdir"] = fname_outdir
         self["dir"] = os.path.dirname(fname)
 
-        self["os_handle"] = openslide.OpenSlide(fname)
+        self["os_handle"] = tiffslide.TiffSlide(fname)
         self["image_base_size"] = self["os_handle"].dimensions
         self["image_work_size"] = params.get("image_work_size", "1.25x")
         self["mask_statistics"] = params.get("mask_statistics", "relative2mask")
