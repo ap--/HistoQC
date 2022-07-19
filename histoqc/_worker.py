@@ -2,6 +2,8 @@
 import os
 import shutil
 
+import fsspec
+
 from histoqc.BaseImage import BaseImage
 from histoqc._pipeline import load_pipeline
 from histoqc._pipeline import setup_plotting_backend
@@ -36,6 +38,10 @@ def worker(idx, file_name, *,
 
     log_manager.logger.info(f"-----Working on:\t{file_name}\t\t{idx+1} of {num_files}")
 
+    # clear fsspec reference to the loop and thread
+    fsspec.asyn.iothread[0] = None
+    fsspec.asyn.loop[0] = None
+
     try:
         s = BaseImage(file_name, fname_outdir, dict(config.items("BaseImage.BaseImage")))
 
@@ -61,15 +67,19 @@ def worker(idx, file_name, *,
         exc.__histoqc_err__ = (file_name, err_str, func_tb_obj)
         raise exc
 
-    else:
+    finally:
         # TODO:
         #   the histoqc workaround below is due an implementation detail in BaseImage:
         #   BaseImage keeps an OpenSlide instance stored under os_handle and leaks a
         #   file handle. This will need fixing in BaseImage.
         #   -> best solution would be to make BaseImage a contextmanager and close
         #      and cleanup the OpenSlide handle on __exit__
-        s["os_handle"] = None  # need to get rid of handle because it can't be pickled
-        return s
+        try:
+            s["os_handle"] = None  # need to get rid of handle because it can't be pickled
+        except NameError:
+            pass
+
+    return s
 
 
 def worker_success(s, result_file):

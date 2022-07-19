@@ -61,7 +61,7 @@ class BaseImage(dict):
         self["outdir"] = fname_outdir  # outdir seems to be only used for saving. so should be local
         self["dir"] = os.path.dirname(fname)  # dir seems to be only used in the annotation module. so ignore for now
 
-        self["os_handle"] = tiffslide.TiffSlide(fname)
+        self["os_handle"] = tiffslide.TiffSlide(fname, storage_options={"skip_instance_cache": True})
         self["image_base_size"] = self["os_handle"].dimensions
         self["image_work_size"] = params.get("image_work_size", "1.25x")
         self["mask_statistics"] = params.get("mask_statistics", "relative2mask")
