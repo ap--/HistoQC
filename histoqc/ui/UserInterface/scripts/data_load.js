@@ -71,7 +71,7 @@ function load_from_text(file_text) {
 	// show the current loaded dataset name
 	$("#dataset-tag")
 		.css("display", "inline")
-		.text("Current dataset: " + cur_file.name + " | Size: " +
+		.text("Current dataset: " + "..." + " | Size: " +
 			ORIGINAL_DATASET.length + " slides");
 
 	if (ORIGINAL_DATASET.length >= 500) {
