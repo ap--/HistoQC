@@ -18,6 +18,7 @@ $(document).ready(function () {
 					'<button class="btn btn-primary btn-results-index">' + result + '</button>'
 				);
 				selectButton.click({urlpath: result}, function (ev) {
+					uploadButtonContainer.hide();
 					load_from_ui(ev.data.urlpath);
 				})
 				uploadButtonContainer.append(selectButton);
